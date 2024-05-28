@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { ref } from "vue";
 import { generate } from "@vue/compiler-core";
 const m_apiKey = ref("");
-
+const passAPI = ref({ a: false });
 
 let nextPromptCount = 2
 const prompts = ref([{
@@ -101,34 +101,52 @@ async function generatePrompt() {
     }
 }
 
-const OpenAIKeyRef = ref(null);
+function autoGrow() {
+    element = document.getElementsByClassName('prompt-input')
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight) + "px";
+}
 
-// async function addSticky() {
-//   const stickyNote = await miro.board.createStickyNote({
-//     content: 'Hello, World!',
-//   });
+function APISubmit() {
+    if (m_apiKey.value != "") {
+        passAPI.value.a = true;
+        console.log(passAPI)
+    }
+    else {
+        passAPI.value.a = false;
+        console.log(passAPI)
+    }
 
-//   await miro.board.viewport.zoomTo(stickyNote);
-// }
-// addSticky()
+}
 </script>
 
 <template>
-    <input class="input input-small" type="text" placeholder="API Key" v-model="m_apiKey">
-    <div class="grid wrapper">
-        <div class="cs1 ce12">
-            <div class="form-group-small" v-for="(prompt, index) in prompts" :key="prompt.id" :promptext="prompt">
-                <label style="margin-bottom: 0;">{{ index + 1 }}</label>
-                <div class="input-wrap">
-                    <input class="input input-small" type="text" placeholder="寫下文字說明" style="width: 85%;"
-                        v-model="prompt.promptValue">
-                    <button class="button button-small remove" @click="prompts.splice(index, 1)">X</button>
+
+    <div class="wrap">
+        <div class="API-input-container" v-if="passAPI.a === false">
+            <input class="input input-small" type="text" placeholder="API Key" v-model="m_apiKey">
+            <button class="button button-primary button-small" @click="APISubmit()">Send</button>
+        </div>
+        <div class="grid wrapper" v-else>
+            <div class="cs1 ce12">
+                <div class="form-group-small" v-for="(prompt, index) in prompts" :key="prompt.id" :promptext="prompt">
+
+                    <div class="input-wrap">
+                        <div class="input-left">
+                            <label style="margin-bottom: 0;">{{ index + 1 }}</label>
+                            <button class="button button-small remove" @click="prompts.splice(index, 1)">X</button>
+                        </div>
+
+                        <textarea class="input input-small prompt-input" type="text" placeholder="寫下文字說明"
+                            style="width: 85%;max-width: 85%;min-width: 85%;min-height: 70px;" v-model="prompt.promptValue"
+                            v-on:input="autoGrow(this)"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="cs1 ce12">
-            <button class="button button-primary button-small" @click="addShot()">Add Shot</button>
-            <button class="button button-primary button-small" @click="generatePrompt()">Generate</button>
+            <div class="cs1 ce12">
+                <button class="button button-primary button-small" @click="addShot()">Add Shot</button>
+                <button class="button button-primary button-small" @click="generatePrompt()">Generate</button>
+            </div>
         </div>
     </div>
 
@@ -147,6 +165,7 @@ const OpenAIKeyRef = ref(null);
     background-color: #acacac;
     transition: 0.2s;
     color: white;
+    padding: 13px !important;
 }
 
 .remove:hover {
@@ -155,7 +174,15 @@ const OpenAIKeyRef = ref(null);
 
 .input-wrap {
     display: flex;
-    align-items: center;
+    align-items: top;
     justify-content: space-between;
+}
+
+.input-left{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: space-between;
+    margin: 5px 0;
 }
 </style>
