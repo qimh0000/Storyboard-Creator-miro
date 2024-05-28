@@ -40,25 +40,60 @@ async function generatePrompt() {
                 const imageCard = await miro.board.createShape({
                     shape: 'rectangle',
                     style: {
-                        color: '#1c1c1e',
-                        fillcolor: '#ffffff',
+                        borderColor: '#D9D9D9',
+                        fillColor: '#D9D9D9',
                     },
-                    x: viewport.x + viewport.width / 2 + i * 600,
+                    x: viewport.x + viewport.width / 2 + i * 1200,
                     y: viewport.y + viewport.height / 2,
                     width: 1100,
                     height: 1600,
+                    rotation: 0.0,
                 })
-
+                const imageCardText = await miro.board.createShape({
+                    shape: 'rectangle',
+                    style: {
+                        borderColor: '#ffffff',
+                        fillColor: '#ffffff',
+                    },
+                    x: imageCard.x,
+                    y: imageCard.y + 531,
+                    width: 1024,
+                    height: 462,
+                    rotation: 0.0,
+                })
+                // const cardPrompt = await miro.board.createCard({
+                //     title: prompts.value[i].promptValue,
+                //     style: {
+                //         cardTheme: '#575757',
+                //     },
+                //     x: imageCard.x,
+                //     y: imageCard.y + 531,
+                //     width: 1024,
+                //     height: 462,
+                //     rotation: 0.0,
+                // });
+                const cardPrompt = await miro.board.createText({
+                    content: prompts.value[i].promptValue,
+                    style: {
+                        fontSize: 55,
+                    },
+                    x: imageCard.x,
+                    y: imageCard.y + 531,
+                    width: 957,
+                    rotation: 0.0,
+                });
+                console.log(imageCard.x, imageCard.y)
                 // 產出圖像
                 console.log(image_url);
                 const image = await miro.board.createImage({
                     title: prompts.value[i].promptValue,
                     url: image_url,
-                    x: viewport.x + viewport.width / 2 + i * 600, // Default value: horizontal center of the board
-                    y: viewport.y + viewport.height / 2, // Default value: vertical center of the board
+                    x: imageCard.x, // Default value: horizontal center of the board
+                    y: imageCard.y - 250, // Default value: vertical center of the board
                     width: 1024, // Set either 'width', or 'height'
                     rotation: 0.0,
                 });
+                console.log("image.x = " + image.x, "image.y = " + image.y)
             } catch (err) {
                 console.log(err);
             }
