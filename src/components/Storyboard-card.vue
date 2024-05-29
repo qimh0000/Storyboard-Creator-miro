@@ -183,6 +183,5 @@ function APISubmit() {
     flex-direction: column;
     align-items: left;
     justify-content: space-between;
-    margin: 5px 0;
 }
 </style>
