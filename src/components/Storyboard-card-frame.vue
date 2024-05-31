@@ -10,17 +10,21 @@ const imageStyles = reactive([
     {
         title: "Illustration",
         is_active: true,
+        prompt: "動漫插畫,",
     },
     {
         title: "Line",
         is_active: false,
+        prompt: "黑白簡單鉛筆漫畫線稿,",
     },
     {
         title: "Realistic",
         is_active: false,
+        prompt: "寫實攝影,",
     }
 ]);
 const activeStyle = ref("Illustration");
+let stylePrompt = imageStyles[0].prompt;
 
 let nextPromptCount = 2
 const prompts = ref([{
@@ -49,7 +53,6 @@ function chooseStyle() {
         else
             imageStyles[i].is_active = false;
     }
-    console.log(imageStyles[0].is_active);
 }
 
 function addShot() {
@@ -63,6 +66,11 @@ function addShot() {
 
 async function generatePrompt() {
     const viewport = await miro.board.viewport.get();
+    for (var i = 0; i < imageStyles.length; i++) {
+        if (imageStyles[i].is_active === true){
+            stylePrompt = imageStyles[i].prompt;
+        }
+    }
     if (prompts.value.length > 0) {
         is_generate.value.a = true;
         const client = new OpenAI({ apiKey: m_apiKey.value, dangerouslyAllowBrowser: true })
@@ -71,7 +79,7 @@ async function generatePrompt() {
                 try {
                     const response = await client.images.generate({
                         model: "dall-e-3",
-                        prompt: prompts.value[i].promptValue,
+                        prompt: stylePrompt+prompts.value[i].promptValue,
                         n: 1,
                         size: "1024x1024"
                     })
@@ -214,7 +222,7 @@ function APISubmit() {
                             is_generate.a ? "Loading..." : "Generate" }}</button>
                 </div>
                 <div class="delete-all-wrap">
-                    <button class="delete-all">Delete</button>
+                    <!-- <button class="delete-all">Delete</button> -->
                 </div>
             </div>
 
@@ -227,6 +235,10 @@ function APISubmit() {
 .wrap,
 .wrapper {
     height: 100%;
+}
+
+button{
+    transition: 0.18s;
 }
 
 .form-group-small {
@@ -294,6 +306,7 @@ function APISubmit() {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .choose-style button {
@@ -336,5 +349,9 @@ function APISubmit() {
 
 .prompt-wrap{
     padding-bottom: 3rem;
+}
+
+.image-style:hover {
+    background-color:#adabab;
 }
 </style>
