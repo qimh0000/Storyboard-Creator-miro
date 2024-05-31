@@ -182,16 +182,16 @@ function APISubmit() {
         <div class="API-input-container" v-if="passAPI.a === false">
             <input class="input input-small" type="text" placeholder="API Key" v-model="m_apiKey">
             <p style="margin:0;color: red;">{{ errorMessage }}</p>
-            <button class="button button-primary button-small" @click="APISubmit()">Send</button>
+            <button class="button button-primary button-small" @click="APISubmit()">送出</button>
         </div>
         <div class="wrapper" v-else>
             <div class="choose-style" style="display: flex;flex-direction: row;justify-content: space-between;">
                 <button class="image-style" :class="[imageStyles[0].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Illustration', chooseStyle()">Illustration</button>
+                    @click="activeStyle = 'Illustration', chooseStyle()">插畫</button>
                 <button class="image-style" :class="[imageStyles[1].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Line', chooseStyle()">Line</button>
+                    @click="activeStyle = 'Line', chooseStyle()">線稿</button>
                 <button class="image-style" :class="[imageStyles[2].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Realistic', chooseStyle()">Realistic</button>
+                    @click="activeStyle = 'Realistic', chooseStyle()">寫實</button>
             </div>
 
             <div class="cs1 ce12 prompt-wrap">
@@ -215,11 +215,11 @@ function APISubmit() {
             </div>
             <div class="prompt-control">
                 <div class="control-panel">
-                    <button class="button button-primary button-small" @click="addShot()">Add</button>
+                    <button class="button button-primary button-small" @click="addShot()">+</button>
                     <button class="button button-primary button-small" @click="generatePrompt()"
                         :disabled='is_generate.a'
                         v-bind:style="[is_generate.a ? { 'background-color': '#bbbbbb', 'color': 'var(--blue700)' } : { 'background-color': 'var(--blue700)' }]">{{
-                            is_generate.a ? "Loading..." : "Generate" }}</button>
+                            is_generate.a ? "生成中..." : "生成" }}</button>
                 </div>
                 <div class="delete-all-wrap">
                     <!-- <button class="delete-all">Delete</button> -->
