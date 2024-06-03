@@ -10,17 +10,17 @@ const imageStyles = reactive([
     {
         title: "Illustration",
         is_active: true,
-        prompt: "動漫插畫,",
+        prompt: "japanese anime with comfortable color and details,",
     },
     {
         title: "Line",
         is_active: false,
-        prompt: "黑白簡單鉛筆漫畫線稿,",
+        prompt: "black and white crayon sketch,",
     },
     {
         title: "Realistic",
         is_active: false,
-        prompt: "寫實攝影,",
+        prompt: "clear photographic,",
     }
 ]);
 const activeStyle = ref("Illustration");
@@ -187,11 +187,11 @@ function APISubmit() {
         <div class="wrapper" v-else>
             <div class="choose-style" style="display: flex;flex-direction: row;justify-content: space-between;">
                 <button class="image-style" :class="[imageStyles[0].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Illustration', chooseStyle()">插畫</button>
+                    @click="activeStyle = 'Illustration', chooseStyle()">日式動畫</button>
                 <button class="image-style" :class="[imageStyles[1].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Line', chooseStyle()">線稿</button>
+                    @click="activeStyle = 'Line', chooseStyle()">黑白插畫</button>
                 <button class="image-style" :class="[imageStyles[2].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Realistic', chooseStyle()">寫實</button>
+                    @click="activeStyle = 'Realistic', chooseStyle()">寫實攝影</button>
             </div>
 
             <div class="cs1 ce12 prompt-wrap">
