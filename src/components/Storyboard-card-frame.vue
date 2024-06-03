@@ -15,7 +15,7 @@ const imageStyles = reactive([
     {
         title: "Line",
         is_active: false,
-        prompt: "black and white crayon sketch,",
+        prompt: "black and white sketch paint by crayon,",
     },
     {
         title: "Realistic",
@@ -67,19 +67,28 @@ function addShot() {
 async function generatePrompt() {
     const viewport = await miro.board.viewport.get();
     for (var i = 0; i < imageStyles.length; i++) {
-        if (imageStyles[i].is_active === true){
+        if (imageStyles[i].is_active === true) {
             stylePrompt = imageStyles[i].prompt;
         }
     }
     if (prompts.value.length > 0) {
         is_generate.value.a = true;
         const client = new OpenAI({ apiKey: m_apiKey.value, dangerouslyAllowBrowser: true })
+        const imageCardContainer = await miro.board.createFrame({
+            style: {
+                fillColor: '#ffffff',
+            },
+            x: viewport.x + viewport.width / 2 + (prompts.value.length - 1) * 600,
+            y: viewport.y + viewport.height / 2,
+            width: prompts.value.length * 1200 + 400,
+            height: 2000,
+        })
         for (var i = 0; i < prompts.value.length; i++) {
             if (prompts.value[i].promptValue != "") {
                 try {
                     const response = await client.images.generate({
                         model: "dall-e-3",
-                        prompt: stylePrompt+prompts.value[i].promptValue,
+                        prompt: stylePrompt + prompts.value[i].promptValue,
                         n: 1,
                         size: "1024x1024"
                     })
@@ -134,6 +143,7 @@ async function generatePrompt() {
                     await imageCard.add(imageCardText)
                     await imageCard.add(cardPrompt)
                     await imageCard.add(image)
+                    await imageCardContainer.add(imageCard)
                     prompts.value[i].correct = true;
                 } catch (err) {
                     prompts.value[i].correct = false;
@@ -237,7 +247,7 @@ function APISubmit() {
     height: 100%;
 }
 
-button{
+button {
     transition: 0.18s;
 }
 
@@ -343,15 +353,15 @@ button{
     margin: 1rem !important;
 }
 
-.delete-all-wrap{
+.delete-all-wrap {
     margin: 1rem;
 }
 
-.prompt-wrap{
+.prompt-wrap {
     padding-bottom: 3rem;
 }
 
 .image-style:hover {
-    background-color:#adabab;
+    background-color: #adabab;
 }
 </style>
