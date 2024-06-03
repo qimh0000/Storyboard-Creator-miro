@@ -10,7 +10,7 @@ const imageStyles = reactive([
     {
         title: "Illustration",
         is_active: true,
-        prompt: "japanese anime with comfortable color and details,",
+        prompt: "anime with comfortable color and details,",
     },
     {
         title: "Line",
@@ -74,15 +74,15 @@ async function generatePrompt() {
     if (prompts.value.length > 0) {
         is_generate.value.a = true;
         const client = new OpenAI({ apiKey: m_apiKey.value, dangerouslyAllowBrowser: true })
-        const imageCardContainer = await miro.board.createFrame({
-            style: {
-                fillColor: '#ffffff',
-            },
-            x: viewport.x + viewport.width / 2 + (prompts.value.length - 1) * 600,
-            y: viewport.y + viewport.height / 2,
-            width: prompts.value.length * 1200 + 400,
-            height: 2000,
-        })
+        // const imageCardContainer = await miro.board.createFrame({
+        //     style: {
+        //         fillColor: '#ffffff',
+        //     },
+        //     x: viewport.x + viewport.width / 2 + (prompts.value.length - 1) * 600,
+        //     y: viewport.y + viewport.height / 2,
+        //     width: prompts.value.length * 1200 + 400,
+        //     height: 2000,
+        // })
         for (var i = 0; i < prompts.value.length; i++) {
             if (prompts.value[i].promptValue != "") {
                 try {
@@ -143,7 +143,8 @@ async function generatePrompt() {
                     await imageCard.add(imageCardText)
                     await imageCard.add(cardPrompt)
                     await imageCard.add(image)
-                    await imageCardContainer.add(imageCard)
+                    const imageCardContainer =[imageCard, imageCardText, cardPrompt, image]
+                    const imageCardGroup = await miro.board.group({ items:imageCardContainer })
                     prompts.value[i].correct = true;
                 } catch (err) {
                     prompts.value[i].correct = false;
