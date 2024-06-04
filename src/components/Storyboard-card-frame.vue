@@ -48,8 +48,10 @@ onMounted(() => {
 
 function chooseStyle() {
     for (var i = 0; i < imageStyles.length; i++) {
-        if (activeStyle.value === imageStyles[i].title)
+        if (activeStyle.value === imageStyles[i].title) {
             imageStyles[i].is_active = true;
+            stylePrompt = imageStyles[i].prompt;
+        }
         else
             imageStyles[i].is_active = false;
     }
@@ -66,11 +68,6 @@ function addShot() {
 
 async function generatePrompt() {
     const viewport = await miro.board.viewport.get();
-    for (var i = 0; i < imageStyles.length; i++) {
-        if (imageStyles[i].is_active === true) {
-            stylePrompt = imageStyles[i].prompt;
-        }
-    }
     if (prompts.value.length > 0) {
         is_generate.value.a = true;
         const client = new OpenAI({ apiKey: m_apiKey.value, dangerouslyAllowBrowser: true })
@@ -143,16 +140,16 @@ async function generatePrompt() {
                     await imageCard.add(imageCardText)
                     await imageCard.add(cardPrompt)
                     await imageCard.add(image)
-                    const imageCardContainer =[imageCard, imageCardText, cardPrompt, image]
-                    const imageCardGroup = await miro.board.group({ items:imageCardContainer })
+                    const imageCardContainer = [imageCard, imageCardText, cardPrompt, image]
+                    const imageCardGroup = await miro.board.group({ items: imageCardContainer })
                     prompts.value[i].correct = true;
                 } catch (err) {
                     prompts.value[i].correct = false;
                     if (err.code === "content_policy_violation") {
-                        errorMessage.value = "Prompts contain text that is not allow.";
+                        errorMessage.value = "說明不符合規範";
                     }
                     else if (err.code === "invalid_api_key") {
-                        errorMessage.value = "Incorrect API key provided."
+                        errorMessage.value = "API key 錯誤"
                         passAPI.value.a = false;
                     }
                     else {
@@ -162,17 +159,20 @@ async function generatePrompt() {
                 }
             }
             else {
-                errorMessage.value = "Please enter your prompts.";
+                errorMessage.value = "請輸入說明";
                 prompts.value[i].correct = false;
             }
         }
         is_generate.value.a = false;
     }
     else {
-        errorMessage.value = "No Prompts!";
+        errorMessage.value = "請按 + 新增欄位";
     }
 }
 
+async function reload() {
+
+}
 
 function APISubmit() {
     if (m_apiKey.value != "") {
@@ -181,7 +181,7 @@ function APISubmit() {
     }
     else {
         passAPI.value.a = false;
-        errorMessage.value = "Please enter API key."
+        errorMessage.value = "請輸入 API key"
     }
 
 }
