@@ -4,7 +4,7 @@ import { ref, onMounted, reactive } from "vue";
 import { generate } from "@vue/compiler-core";
 const m_apiKey = ref("");
 const passAPI = ref({ a: false });
-const is_generate = ref({ a: true });
+const is_generate = ref({ a:  false });
 const errorMessage = ref("");
 const imageStyles = reactive([
     {
