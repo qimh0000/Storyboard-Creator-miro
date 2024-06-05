@@ -4,7 +4,8 @@ import { ref, onMounted, reactive } from "vue";
 import { generate } from "@vue/compiler-core";
 const m_apiKey = ref("");
 const passAPI = ref({ a: false });
-const is_generate = ref({ a:  false });
+const is_generate = ref({ a: false });
+const is_overload = ref({ a: false });
 const errorMessage = ref("");
 const imageStyles = reactive([
     {
@@ -59,11 +60,25 @@ function chooseStyle() {
 
 function addShot() {
     errorMessage.value = "";
-    prompts.value.push({
-        id: nextPromptCount++,
-        promptValue: "",
-        correct: true,
-    });
+    if (prompts.value.length < 9) {
+        is_overload.value.a = false;
+        prompts.value.push({
+            id: nextPromptCount++,
+            promptValue: "",
+            correct: true,
+        });
+    }
+    else if(prompts.value.length == 9){
+        is_overload.value.a = true;
+        prompts.value.push({
+            id: nextPromptCount++,
+            promptValue: "",
+            correct: true,
+        });
+    }
+    else{
+        is_overload.value.a = true;
+    }
 }
 
 async function generatePrompt() {
@@ -196,7 +211,7 @@ function APISubmit() {
             <button class="button button-primary button-small" @click="APISubmit()">送出</button>
         </div>
         <div class="wrapper" v-else>
-            <div class="main-container" >
+            <div class="main-container">
                 <div class="choose-style" style="display: flex;flex-direction: row;justify-content: space-between;">
                     <button class="image-style" :class="[imageStyles[0].is_active ? 'active' : '']"
                         @click="activeStyle = 'Illustration', chooseStyle()">日式動畫</button>
@@ -216,7 +231,7 @@ function APISubmit() {
                                     v-bind:style="[prompt.correct ? { 'background-color': '#7b7c82' } : { 'background-color': '#ff4242' }]">
                                     <p style="margin-bottom: 0;">{{ index + 1 }}</p>
                                 </div>
-                                <button class="button button-small remove" @click="prompts.splice(index, 1)">X</button>
+                                <button class="button button-small remove" @click="prompts.splice(index, 1),is_overload.a = false;">X</button>
                             </div>
                             <div class="text-input-area">
                                 <textarea class="input input-small prompt-input" type="text" placeholder="寫下文字說明"
@@ -228,7 +243,7 @@ function APISubmit() {
                 </div>
                 <div class="prompt-control">
                     <div class="control-panel">
-                        <button class="button button-primary button-small" @click="addShot()">+</button>
+                        <button class="button button-primary button-small" @click="addShot()" v-bind:style="[is_overload.a ? {'background-color': '#bbbbbb', 'color': 'var(--blue700)' } : { 'background-color': 'var(--blue700)'}]">+</button>
                         <button class="button button-primary button-small" @click="generatePrompt()"
                             :disabled='is_generate.a'
                             v-bind:style="[is_generate.a ? { 'background-color': '#bbbbbb', 'color': 'var(--blue700)' } : { 'background-color': 'var(--blue700)' }]">{{
@@ -372,16 +387,17 @@ button {
     background-color: #adabab;
 }
 
-.generate-overlay{
+.generate-overlay {
     display: flex;
     position: absolute;
-    align-items:center;
+    align-items: center;
     justify-content: center;
     height: 100%;
-    width: 100%; 
+    width: 100%;
     top: 0;
     left: 0;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.85);
+    opacity: 85%;
     transition: 0.2s;
 }
 </style>
