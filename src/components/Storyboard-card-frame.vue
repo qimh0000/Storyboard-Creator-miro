@@ -4,7 +4,7 @@ import { ref, onMounted, reactive } from "vue";
 import { generate } from "@vue/compiler-core";
 const m_apiKey = ref("");
 const passAPI = ref({ a: false });
-const is_generate = ref({ a: false });
+const is_generate = ref({ a: true });
 const errorMessage = ref("");
 const imageStyles = reactive([
     {
@@ -196,48 +196,54 @@ function APISubmit() {
             <button class="button button-primary button-small" @click="APISubmit()">送出</button>
         </div>
         <div class="wrapper" v-else>
-            <div class="choose-style" style="display: flex;flex-direction: row;justify-content: space-between;">
-                <button class="image-style" :class="[imageStyles[0].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Illustration', chooseStyle()">日式動畫</button>
-                <button class="image-style" :class="[imageStyles[1].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Line', chooseStyle()">黑白插畫</button>
-                <button class="image-style" :class="[imageStyles[2].is_active ? 'active' : '']"
-                    @click="activeStyle = 'Realistic', chooseStyle()">寫實攝影</button>
-            </div>
+            <div class="main-container" >
+                <div class="choose-style" style="display: flex;flex-direction: row;justify-content: space-between;">
+                    <button class="image-style" :class="[imageStyles[0].is_active ? 'active' : '']"
+                        @click="activeStyle = 'Illustration', chooseStyle()">日式動畫</button>
+                    <button class="image-style" :class="[imageStyles[1].is_active ? 'active' : '']"
+                        @click="activeStyle = 'Line', chooseStyle()">黑白插畫</button>
+                    <button class="image-style" :class="[imageStyles[2].is_active ? 'active' : '']"
+                        @click="activeStyle = 'Realistic', chooseStyle()">寫實攝影</button>
+                </div>
 
-            <div class="cs1 ce12 prompt-wrap">
-                <div class="form-group-small" v-for="(prompt, index) in prompts" :key="prompt.id" :promptext="prompt">
+                <div class="cs1 ce12 prompt-wrap">
+                    <div class="form-group-small" v-for="(prompt, index) in prompts" :key="prompt.id"
+                        :promptext="prompt">
 
-                    <div class="input-wrap">
-                        <div class="input-left">
-                            <div class="prompt-index"
-                                v-bind:style="[prompt.correct ? { 'background-color': '#7b7c82' } : { 'background-color': '#ff4242' }]">
-                                <p style="margin-bottom: 0;">{{ index + 1 }}</p>
+                        <div class="input-wrap">
+                            <div class="input-left">
+                                <div class="prompt-index"
+                                    v-bind:style="[prompt.correct ? { 'background-color': '#7b7c82' } : { 'background-color': '#ff4242' }]">
+                                    <p style="margin-bottom: 0;">{{ index + 1 }}</p>
+                                </div>
+                                <button class="button button-small remove" @click="prompts.splice(index, 1)">X</button>
                             </div>
-                            <button class="button button-small remove" @click="prompts.splice(index, 1)">X</button>
-                        </div>
-                        <div class="text-input-area">
-                            <textarea class="input input-small prompt-input" type="text" placeholder="寫下文字說明"
-                                v-model="prompt.promptValue"></textarea>
+                            <div class="text-input-area">
+                                <textarea class="input input-small prompt-input" type="text" placeholder="寫下文字說明"
+                                    v-model="prompt.promptValue"></textarea>
+                            </div>
                         </div>
                     </div>
+                    <p style="margin:0;color: red;">{{ errorMessage }}</p>
                 </div>
-                <p style="margin:0;color: red;">{{ errorMessage }}</p>
+                <div class="prompt-control">
+                    <div class="control-panel">
+                        <button class="button button-primary button-small" @click="addShot()">+</button>
+                        <button class="button button-primary button-small" @click="generatePrompt()"
+                            :disabled='is_generate.a'
+                            v-bind:style="[is_generate.a ? { 'background-color': '#bbbbbb', 'color': 'var(--blue700)' } : { 'background-color': 'var(--blue700)' }]">{{
+                                is_generate.a ? "生成中..." : "生成" }}</button>
+                    </div>
+                    <div class="delete-all-wrap">
+                        <!-- <button class="delete-all">Delete</button> -->
+                    </div>
+                </div>
             </div>
-            <div class="prompt-control">
-                <div class="control-panel">
-                    <button class="button button-primary button-small" @click="addShot()">+</button>
-                    <button class="button button-primary button-small" @click="generatePrompt()"
-                        :disabled='is_generate.a'
-                        v-bind:style="[is_generate.a ? { 'background-color': '#bbbbbb', 'color': 'var(--blue700)' } : { 'background-color': 'var(--blue700)' }]">{{
-                            is_generate.a ? "生成中..." : "生成" }}</button>
-                </div>
-                <div class="delete-all-wrap">
-                    <!-- <button class="delete-all">Delete</button> -->
-                </div>
+            <div class="generate-overlay" v-if="is_generate.a === true">
+                <p>生成中...</p>
             </div>
-
         </div>
+
     </div>
 
 </template>
@@ -364,5 +370,18 @@ button {
 
 .image-style:hover {
     background-color: #adabab;
+}
+
+.generate-overlay{
+    display: flex;
+    position: absolute;
+    align-items:center;
+    justify-content: center;
+    height: 100%;
+    width: 100%; 
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    transition: 0.2s;
 }
 </style>
