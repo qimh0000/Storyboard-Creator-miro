@@ -11,7 +11,7 @@ const imageStyles = reactive([
     {
         title: "Illustration",
         is_active: true,
-        prompt: "anime with comfortable color and details,",
+        prompt: "2D animation scene with low saturation depicted in a subtle,",
     },
     {
         title: "Line",
@@ -82,6 +82,7 @@ function addShot() {
 }
 
 async function generatePrompt() {
+    errorMessage.value = "";
     const viewport = await miro.board.viewport.get();
     if (prompts.value.length > 0) {
         is_generate.value.a = true;
@@ -105,7 +106,7 @@ async function generatePrompt() {
                         size: "1024x1024"
                     })
                     const image_url = response.data[0].url
-
+                    console.log(stylePrompt + prompts.value[i].promptValue)
                     // 產出故事卡格式
                     const imageCard = await miro.board.createFrame({
                         title: prompts.value[i].promptValue,
